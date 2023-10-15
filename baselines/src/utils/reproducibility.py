@@ -15,8 +15,8 @@ def save_git_info(output_dir, repo_dir=None):
     process = subprocess.run("git rev-parse --show-toplevel".split(), cwd=repo_dir, capture_output=True)
     p_out = process.stdout.strip().decode("utf-8")
     p_err = process.stderr.strip().decode("utf-8")
-    if process.returncode != 0:
-        raise Exception(p_err)
+    # if process.returncode != 0:
+    #     raise Exception(p_err)
     repo_dir = p_out
 
     git_instructions_file_path = os.path.join(output_dir, "git_instructions.txt")

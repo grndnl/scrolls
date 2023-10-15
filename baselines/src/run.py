@@ -290,13 +290,19 @@ def main():
     parser = HfArgumentParser((ModelArguments, DataTrainingArguments, Seq2SeqTrainingArguments))
     if any(sys.argv[1].endswith(ext) for ext in [".json"]):
         config = handle_config()
+        # print(f"\nConfig:\n{config}")
         model_args, data_args, training_args = parser.parse_dictionary_and_args(config)
     else:
         model_args, data_args, training_args = parser.parse_args_into_dataclasses()
 
+    # print(f"\nTraining args:\n{training_args}")
+    # training_args._n_gpu = 1
+    # print(training_args.local_rank)
+    # print()
+
     if training_args.process_index == 0:
         os.makedirs(training_args.output_dir, exist_ok=True)
-        save_git_info(training_args.output_dir)
+        # save_git_info(training_args.output_dir)
         save_args({**asdict(model_args), **asdict(data_args), **training_args.to_dict()})
 
     # Setup logging
