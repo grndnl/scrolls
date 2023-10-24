@@ -84,7 +84,7 @@ class ModelArguments:
         default=False,
         metadata={
             "help": "Will use the token generated when running `transformers-cli login` (necessary to use this script "
-            "with private models)."
+                    "with private models)."
         },
     )
     drop_duplicates_in_eval: bool = field(
@@ -148,7 +148,7 @@ class DataTrainingArguments:
         default=None,
         metadata={
             "help": "An optional input evaluation data file to evaluate the metrics (rouge) on "
-            "(a jsonlines or csv file)."
+                    "(a jsonlines or csv file)."
         },
     )
     test_file: Optional[str] = field(
@@ -168,59 +168,59 @@ class DataTrainingArguments:
         default=None,
         metadata={
             "help": "The maximum total input sequence length after tokenization. Sequences longer "
-            "than this will be truncated, sequences shorter will be padded."
+                    "than this will be truncated, sequences shorter will be padded."
         },
     )
     max_target_length: Optional[int] = field(
         default=128,
         metadata={
             "help": "The maximum total sequence length for target text after tokenization. Sequences longer "
-            "than this will be truncated, sequences shorter will be padded."
+                    "than this will be truncated, sequences shorter will be padded."
         },
     )
     val_max_target_length: Optional[int] = field(
         default=None,
         metadata={
             "help": "The maximum total sequence length for validation target text after tokenization. Sequences longer "
-            "than this will be truncated, sequences shorter will be padded. Will default to `max_target_length`."
-            "This argument is also used to override the ``max_length`` param of ``model.generate``, which is used "
-            "during ``evaluate`` and ``predict``."
+                    "than this will be truncated, sequences shorter will be padded. Will default to `max_target_length`."
+                    "This argument is also used to override the ``max_length`` param of ``model.generate``, which is used "
+                    "during ``evaluate`` and ``predict``."
         },
     )
     pad_to_max_length: bool = field(
         default=False,
         metadata={
             "help": "Whether to pad all samples to model maximum sentence length. "
-            "If False, will pad the samples dynamically when batching to the maximum length in the batch. More "
-            "efficient on GPU but very bad for TPU."
+                    "If False, will pad the samples dynamically when batching to the maximum length in the batch. More "
+                    "efficient on GPU but very bad for TPU."
         },
     )
     max_train_samples: Optional[int] = field(
         default=None,
         metadata={
             "help": "For debugging purposes or quicker training, truncate the number of training examples to this "
-            "value if set."
+                    "value if set."
         },
     )
     max_eval_samples: Optional[int] = field(
         default=None,
         metadata={
             "help": "For debugging purposes or quicker training, truncate the number of evaluation examples to this "
-            "value if set."
+                    "value if set."
         },
     )
     max_predict_samples: Optional[int] = field(
         default=None,
         metadata={
             "help": "For debugging purposes or quicker training, truncate the number of prediction examples to this "
-            "value if set."
+                    "value if set."
         },
     )
     num_beams: Optional[int] = field(
         default=None,
         metadata={
             "help": "Number of beams to use for evaluation. This argument will be passed to ``model.generate``, "
-            "which is used during ``evaluate`` and ``predict``."
+                    "which is used during ``evaluate`` and ``predict``."
         },
     )
     ignore_pad_token_for_loss: bool = field(
@@ -354,7 +354,6 @@ def main():
 
     # Set seed before initializing model.
     set_seed(training_args.seed)
-
 
     print("---------------------DATASET INFO-------------------------------")
 
@@ -540,7 +539,7 @@ def main():
         if data_args.max_train_samples is not None:
             untokenized_train_dataset = untokenized_train_dataset.select(range(data_args.max_train_samples))
         with training_args.main_process_first(
-            local=not data_args.shared_storage, desc="train dataset map pre-processing"
+                local=not data_args.shared_storage, desc="train dataset map pre-processing"
         ):
             train_dataset = untokenized_train_dataset.map(
                 preprocess_function,
@@ -574,7 +573,7 @@ def main():
             untokenized_eval_dataset = drop_duplicates_in_input(untokenized_eval_dataset)
         print(f"validation dataset: {untokenized_eval_dataset}")
         with training_args.main_process_first(
-            local=not data_args.shared_storage, desc="validation dataset map pre-processing"
+                local=not data_args.shared_storage, desc="validation dataset map pre-processing"
         ):
             print("VALIDATION DATASET MAP PRE-PROCESSING")
             eval_dataset = untokenized_eval_dataset.map(
@@ -587,7 +586,6 @@ def main():
                 desc="Running tokenizer on validation dataset",
             )
         print(f"----len VAL dataset: {len(eval_dataset)}--------------------------")
-
 
     if training_args.do_predict:
         max_target_length = data_args.val_max_target_length
@@ -606,7 +604,7 @@ def main():
         print(f"test dataset after deduplication: {untokenized_predict_dataset}")
 
         with training_args.main_process_first(
-            local=not data_args.shared_storage, desc="prediction dataset map pre-processing"
+                local=not data_args.shared_storage, desc="prediction dataset map pre-processing"
         ):
             print("TEST DATASET MAP PRE-PROCESSING")
             predict_dataset = untokenized_predict_dataset.map(
@@ -725,18 +723,18 @@ def main():
 
 
 def preprocess_function(
-    examples,
-    tokenizer,
-    prefix,
-    input_column,
-    output_column,
-    max_source_length,
-    max_target_length,
-    padding,
-    ignore_pad_token_for_loss,
-    assign_zero_to_too_long_val_examples,
-    global_attention_first_token,
-    trim_very_long_strings,
+        examples,
+        tokenizer,
+        prefix,
+        input_column,
+        output_column,
+        max_source_length,
+        max_target_length,
+        padding,
+        ignore_pad_token_for_loss,
+        assign_zero_to_too_long_val_examples,
+        global_attention_first_token,
+        trim_very_long_strings,
 ):
     if not isinstance(examples[input_column][0], str):
         input_ids = []

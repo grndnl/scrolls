@@ -1,6 +1,8 @@
 {
-    "dataset_name": "tau/scrolls",
-    "dataset_config_name": "qasper",
+    "dataset_name": "json",
+    "train_file": "data/scrolls_qasper_grobid/train.jsonl",
+    "validation_file": "data/scrolls_qasper_grobid/validation.jsonl",
+    "test_file": "data/scrolls_qasper_grobid/test.jsonl",
     "num_train_epochs": 20,
     "metric_names": ["f1"],
     "metric_for_best_model": "f1",

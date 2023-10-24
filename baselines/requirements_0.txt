@@ -1,0 +1,12 @@
+git+http://github.com/eladsegal/public-transformers@scrolls#egg=transformers  # https://github.com/eladsegal/public-transformers/tree/scrolls
+datasets==1.17.0
+wandb
+sentencepiece
+git+http://github.com/pytorch/fairseq@f6abcc2a67328bee8b15c596bb626ce2d720aae6#egg=fairseq  # For smart batching
+plotly==5.3.1
+
+# METRICS:
+# ROUGE
+nltk
+absl-py
+rouge_score
