@@ -355,6 +355,9 @@ def main():
     # Set seed before initializing model.
     set_seed(training_args.seed)
 
+
+    print("---------------------DATASET INFO-------------------------------")
+
     # Get the datasets: you can either provide your own CSV/JSON training and evaluation files (see below)
     # or just provide the name of one of the public datasets available on the hub at https://huggingface.co/datasets/
     # (the dataset will be downloaded automatically from the datasets Hub).
@@ -374,6 +377,10 @@ def main():
             data_files["validation"] = data_args.validation_file
         if data_args.test_file is not None:
             data_files["test"] = data_args.test_file
+
+    print(data_args)
+    print(model_args.cache_dir)
+    print(data_files)
 
     # Downloading and loading a dataset from the hub/local script.
     seq2seq_dataset = load_dataset(
@@ -551,21 +558,25 @@ def main():
         preprocess_function_kwargs["max_target_length"] = max_target_length
         if "validation" not in seq2seq_dataset:
             raise ValueError("--do_eval requires a validation dataset")
-        logger.info("")
-        logger.info("Validation examples before tokenization:")
-        logger.info(f"input #0: {seq2seq_dataset['validation'][0]['input']}")
-        logger.info(f"output #0: {seq2seq_dataset['validation'][0]['output']}")
-        logger.info(f"input #1: {seq2seq_dataset['validation'][1]['input']}")
-        logger.info(f"output #1: {seq2seq_dataset['validation'][1]['output']}")
-        logger.info("")
+        # logger.info("")
+        # logger.info("Validation examples before tokenization:")
+        # logger.info(f"input #0: {seq2seq_dataset['validation'][0]['input']}")
+        # logger.info(f"output #0: {seq2seq_dataset['validation'][0]['output']}")
+        # logger.info(f"input #1: {seq2seq_dataset['validation'][1]['input']}")
+        # logger.info(f"output #1: {seq2seq_dataset['validation'][1]['output']}")
+        # logger.info("")
         untokenized_eval_dataset = seq2seq_dataset["validation"]
+        print(f"----- MAX EVAL SAMPLES: -------- {data_args.max_eval_samples}")
+        print(f"validation dataset: {seq2seq_dataset['validation']}")
         if data_args.max_eval_samples is not None:
             untokenized_eval_dataset = untokenized_eval_dataset.select(range(data_args.max_eval_samples))
         if model_args.drop_duplicates_in_eval is True:
             untokenized_eval_dataset = drop_duplicates_in_input(untokenized_eval_dataset)
+        print(f"validation dataset: {untokenized_eval_dataset}")
         with training_args.main_process_first(
             local=not data_args.shared_storage, desc="validation dataset map pre-processing"
         ):
+            print("VALIDATION DATASET MAP PRE-PROCESSING")
             eval_dataset = untokenized_eval_dataset.map(
                 preprocess_function,
                 fn_kwargs=preprocess_function_kwargs,
@@ -575,6 +586,8 @@ def main():
                 load_from_cache_file=not data_args.overwrite_cache,
                 desc="Running tokenizer on validation dataset",
             )
+        print(f"----len VAL dataset: {len(eval_dataset)}--------------------------")
+
 
     if training_args.do_predict:
         max_target_length = data_args.val_max_target_length
@@ -583,26 +596,30 @@ def main():
         if "test" not in seq2seq_dataset:
             raise ValueError("--do_predict requires a test dataset")
         untokenized_predict_dataset = seq2seq_dataset["test"]
+        print(f"test dataset: {seq2seq_dataset['test']}")
         if data_args.max_predict_samples is not None:
             untokenized_predict_dataset = untokenized_predict_dataset.select(range(data_args.max_predict_samples))
         if model_args.drop_duplicates_in_eval is True:
             untokenized_predict_dataset = drop_duplicates_in_input(untokenized_predict_dataset)
-
         if output_column in untokenized_predict_dataset.column_names:
             untokenized_predict_dataset = untokenized_predict_dataset.remove_columns(output_column)
+        print(f"test dataset after deduplication: {untokenized_predict_dataset}")
 
         with training_args.main_process_first(
             local=not data_args.shared_storage, desc="prediction dataset map pre-processing"
         ):
+            print("TEST DATASET MAP PRE-PROCESSING")
             predict_dataset = untokenized_predict_dataset.map(
                 preprocess_function,
                 fn_kwargs=preprocess_function_kwargs,
                 batched=True,
                 num_proc=data_args.preprocessing_num_workers,
                 remove_columns=untokenized_predict_dataset.column_names,
-                load_from_cache_file=not data_args.overwrite_cache,
+                load_from_cache_file=False,
                 desc="Running tokenizer on prediction dataset",
             )
+
+        print(f"----len TEST dataset: {len(predict_dataset)}--------------------------")
 
     if data_args.preprocess_only:
         logger.info(f"With --preprocess_only, exiting after preprocess_on the data")
@@ -660,7 +677,9 @@ def main():
         logger.info("*** Evaluate ***")
 
         metrics = trainer.evaluate(metric_key_prefix="eval")
+        # logger.info(f"MAX EVAL SAMPLES: {data_args.max_eval_samples}")
         max_eval_samples = data_args.max_eval_samples if data_args.max_eval_samples is not None else len(eval_dataset)
+        logger.info(f"Length of eval dataset: {max_eval_samples}")
         metrics["eval_samples"] = min(max_eval_samples, len(eval_dataset))
 
         trainer.log_metrics("eval", metrics)
