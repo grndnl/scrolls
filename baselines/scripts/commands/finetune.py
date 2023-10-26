@@ -11,9 +11,8 @@ def get_command(id_):
 
     commands_dict = {}
 
-    tokens_bsz = 16384
+    tokens_bsz = 12000
     num_gpus = 1
-    print(f"NUM GPUS {num_gpus} --------------------------------------------------------------")
     accum_steps = 1
     folder_suffix_params = ["max_source_length", "gradient_accumulation_steps", "learning_rate", "train_max_tokens"]
     folder_suffix = "$".join(folder_suffix_params)

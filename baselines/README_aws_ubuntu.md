@@ -20,7 +20,7 @@ Prerequisites:
 To clone the repository and set up the environment, please run the following commands:
 ```
 git clone https://github.com/tau-nlp/scrolls.git
-cd /home/ubuntu/baselines
+cd /home/ubuntu/scrolls/baselines
 source /home/ubuntu/.virtualenvs/scrolls/bin/activate
 
 pip install torch==1.9.0+cu111 torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html
