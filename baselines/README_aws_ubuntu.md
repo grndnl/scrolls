@@ -70,6 +70,7 @@ source /home/ubuntu/.virtualenvs/scrolls/bin/activate
 cd /home/ubuntu/baselines
 python scripts/execute.py scripts/commands/generate.py qasper_256-bart_validation --checkpoint_path /home/ubuntu/baselines/outputs/facebook-bart-base_256_1_5e-05_16384_scrolls_qasper_site-wash-14
 python scripts/execute.py scripts/commands/generate.py qasper_256-bart_test --checkpoint_path /home/ubuntu/baselines/outputs/facebook-bart-base_256_1_5e-05_16384_scrolls_qasper_site-wash-14
+python scripts/execute.py scripts/commands/generate.py qasper_256-bart_test --checkpoint_path /home/ubuntu/baselines/outputs/facebook-bart-base_256_1_5e-05_12000_json_song-flow-67
 ```
 
 The options for `dataset` and `model` are the same as in [training](#train).

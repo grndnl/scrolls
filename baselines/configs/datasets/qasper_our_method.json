@@ -1,0 +1,10 @@
+{
+    "dataset_name": "json",
+    "train_file": "../data/our_method/train.jsonl",
+    "validation_file": "../data/our_method/validation.jsonl",
+    "test_file": "../data/our_method/test.jsonl",
+    "num_train_epochs": 20,
+    "metric_names": ["f1"],
+    "metric_for_best_model": "f1",
+    "greater_is_better": true
+}
